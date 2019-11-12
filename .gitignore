@@ -232,3 +232,5 @@ modules.xml
 
 # SQLITE
 *.sqlite3
+
+.DS_Store*
