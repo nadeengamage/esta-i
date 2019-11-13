@@ -10,7 +10,7 @@ class Employee(models.Model):
 	date_join 		= models.DateField()
 	date_left 		= models.DateField('Left Date',auto_now=False, auto_now_add=False, null=True, blank=True)
 	status 			= models.BooleanField('Employee Active Status') # if status is 1 then employee is active in the organization.
-	history = HistoricalRecords(table_name='employee_audit_trail')
+	history 		= HistoricalRecords(table_name='employee_audit_trail')
 
 	def __str__(self):
 		return "{} {}".format(self.first_name, self.last_name)
