@@ -19,5 +19,6 @@ from . import views
 app_name='assigner'
 
 urlpatterns = [
-    path('', views.index, name='index')
+    path('', views.index, name='index'),
+    path('history/', views.history, name='history'),
 ]
