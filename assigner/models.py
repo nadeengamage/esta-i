@@ -2,6 +2,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from employee.models import Employee
 from department.models import Department
+from django.core.validators import ValidationError
 
 
 class Assigner(models.Model):
@@ -10,9 +11,8 @@ class Assigner(models.Model):
 	working_hours 	= models.TimeField()
 	history 		= HistoricalRecords(table_name='assigner_audit_trail')
 
-	# custom save method 
-	def save(self, *args, **kwargs):
-
+	# validate working hours of the employee
+	def validate_unique(self, *args, **kwargs):
 		# fetching employee details
 		try:
 		    employee_details = Employee.objects.get(emp_id=self.employee.emp_id, status=1)
@@ -46,13 +46,11 @@ class Assigner(models.Model):
 
 			if str(employee_details.working_hours) > str(sum_of_hours):
 				if str(employee_details.working_hours) >= self.get_sum_of_times([str(sum_of_hours), str(self.working_hours)]):
-					super(Assigner, self).save(*args, **kwargs)
+					pass
 				else:
 					self.emplpyee_assigned_time_error();	
 			else:
 				self.emplpyee_assigned_time_error();
-		else:
-			super(Assigner, self).save(*args, **kwargs)
 		
 	# get all records from the table
 	def get_all_objects_by_emp_id(self, employee_id):
@@ -82,7 +80,9 @@ class Assigner(models.Model):
 
 	# throw employee time exceed error
 	def emplpyee_assigned_time_error(self):
-		raise Exception('Employee cannot assign to depatment due to working hours exceeded!')
+		raise ValidationError({'working_hours': 'Employee cannot assign to depatment due to working hours exceeded!'})
+		super(Assigner, self).validate_unique(*args, **kwargs)
+
 		    
 
 	def __str__(self):
