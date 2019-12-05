@@ -1,15 +1,14 @@
 from django.db import models
-from simple_history.models import HistoricalRecords
 from employee.models import Employee
 from department.models import Department
 from django.core.validators import ValidationError
 
 
 class Assigner(models.Model):
-	employee 		= models.ForeignKey(Employee, on_delete=models.CASCADE)
-	department 		= models.ForeignKey(Department, on_delete=models.CASCADE)
+	id 				= models.AutoField(primary_key=True)
+	employee 		= models.ForeignKey(Employee, on_delete=models.CASCADE, db_column='emp_id')
+	department 		= models.ForeignKey(Department, on_delete=models.CASCADE, db_column='dep_id')
 	working_hours 	= models.TimeField()
-	history 		= HistoricalRecords(table_name='assigner_audit_trail')
 
 	# validate working hours of the employee
 	def validate_unique(self, *args, **kwargs):
@@ -83,7 +82,30 @@ class Assigner(models.Model):
 		raise ValidationError({'working_hours': 'Employee cannot assign to depatment due to working hours exceeded!'})
 		super(Assigner, self).validate_unique(*args, **kwargs)
 
-		    
+	def save(self, *args, **kwargs):
+		if self.id is None:	
+			super(Assigner, self).save(*args, **kwargs)
+			assigner = Assigner.objects.get(id=self.id)
+			self.history(assigner, 'Inserted Record', 'CREATED')
+		else:
+			super(Assigner,self).save(*args, **kwargs)
+			assigner = Assigner.objects.get(id=self.id)
+			self.history(assigner, 'Updated Record', 'UPDATED')
+
+	def delete(self, *args, **kwargs):
+		super(Assigner, self).delete(*args, **kwargs)
+		assigner = Assigner.objects.get(id=self.id)
+		self.history(assigner, 'Deleted Record', 'DELETED')
+
+	def history(self, model, history_change_reason, history_type):
+		AssignerHistory.objects.create(
+			assigner = model,
+			employee = Employee.objects.get(emp_id=model.employee.emp_id),
+			department = Department.objects.get(dep_id=model.department.dep_id),
+			working_hours = self.working_hours,
+			history_change_reason = history_change_reason,
+			history_type = history_type
+		)
 
 	def __str__(self):
 		return '{} {} - {}'.format(
@@ -95,4 +117,18 @@ class Assigner(models.Model):
 	class Meta(object):
 		db_table = 'assigner'
 			
+		
+
+class AssignerHistory(models.Model):
+	history_id 				= models.AutoField(primary_key=True)
+	assigner 				= models.ForeignKey(Assigner, on_delete=models.CASCADE)
+	employee 				= models.ForeignKey(Employee, on_delete=models.CASCADE, db_column='emp_id')
+	department 				= models.ForeignKey(Department, on_delete=models.CASCADE, db_column='dep_id')
+	working_hours 			= models.TimeField()
+	history_change_reason 	= models.CharField(max_length=50)
+	history_type 			= models.CharField(max_length=10)
+	history_date 			= models.DateTimeField(auto_now_add=True)
+	
+	class Meta(object):
+		db_table = 'assigner_audit_trail'
 		
