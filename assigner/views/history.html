@@ -28,8 +28,10 @@
 		      <td>{{ assigner.working_hours|upper }} </td>
 		      <td>{{ assigner.history_date|date }} </td>
 		      <td>
-		      	{% if assigner.history_type == '+' %}
+		      	{% if assigner.history_type == 'CREATED' %}
 		      		Create
+	      		{% elif assigner.history_type == 'UPDATED' %}
+	      			Updated
 		      	{% else %}
 		      		Delete
 		      	{% endif %}
