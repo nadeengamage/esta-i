@@ -20,15 +20,22 @@ class Assigner(models.Model):
 			self.employee_not_found_error()
 			employee_details = None
 
+		try:
+		    department_details = Department.objects.get(dep_id=self.department.dep_id, status=1)
+		except department_details.DoesNotExist:
+			# if not found the department then throw the error
+			self.employee_not_found_error()
+			department_details = None
+
 		# check employee is active or not
 		if employee_details.status is True:
-			self.employee_department_validation(employee_details, *args, **kwargs)
+			self.employee_department_validation(employee_details, department_details, *args, **kwargs)
 		else:
 			self.emplpyee_deactivated_error()
 
 			
 	# validation befor save emoloyee and department
-	def employee_department_validation(self, employee_details, *args, **kwargs):
+	def employee_department_validation(self, employee_details, department_details, *args, **kwargs):
 		try:
 			employee_records = self.get_all_objects_by_emp_id(employee_details)
 		except Exception as e:
@@ -48,6 +55,11 @@ class Assigner(models.Model):
 					pass
 				else:
 					self.emplpyee_assigned_time_error();	
+			else:
+				self.emplpyee_assigned_time_error();
+		else:
+			if str(department_details.working_hours_per_day) >= str(self.working_hours):
+				pass
 			else:
 				self.emplpyee_assigned_time_error();
 		
