@@ -231,6 +231,6 @@ modules.xml
 # End of https://www.gitignore.io/api/intellij+all
 
 # SQLITE
-*.sqlite3
+# *.sqlite3
 
 .DS_Store*
