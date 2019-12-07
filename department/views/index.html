@@ -1,0 +1,52 @@
+{% extends 'static/template.html' %}
+	
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">ICT/17/B2/13</a></h5>
+      <h5 class="my-0 mr-md-auto font-weight-normal">Departments</h5>
+      <a class="btn btn-outline-primary" href="/admin/department/department/">Manage Details</a>
+ </div>
+
+ 	<div class="container">
+		<table class="table">
+		  <thead class="thead-light">
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Department Name</th>
+		      <th scope="col">Working Days Per Week</th>
+		      <th scope="col">Working Hours Per Day</th>
+		      <th scope="col">Status</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for department in departments %}
+		    <tr>
+		      <th scope="row">{{ forloop.counter }}</th>
+		      <td>{{ department.name|upper }} </td>
+		      <td>{{ department.working_days_per_week|upper }} </td>
+		      <td>{{ department.working_hours_per_day|upper }} </td>
+		      <td>{{ department.status|upper }} </td>
+		    </tr>
+		    {% endfor %}
+		  </tbody>
+		</table>
+		<nav aria-label="navigation">
+			<ul class="pagination">
+		        {% if departments.has_previous %}
+		            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ departments.previous_page_number }}">Previous</a></li>
+		        {% endif %}
+
+	            {% for _ in departments.paginator.num_pages|make_list %}
+	            	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+	            {% endfor %}
+
+		        {% if departments.has_next %}
+		            <li class="page-item"><a class="page-link" href="?page={{ departments.next_page_number }}">Next</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ departments.paginator.num_pages }}">Last &raquo;</a></li>
+		        {% endif %}
+			</ul>
+		</nav>
+ 	</div>	
+
+{% endblock %}

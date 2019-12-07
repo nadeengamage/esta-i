@@ -1,0 +1,56 @@
+{% extends 'static/template.html' %}
+	
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">ICT/17/B2/13</a></h5>
+      <h5 class="my-0 mr-md-auto font-weight-normal">Employees</h5>
+      <a class="btn btn-outline-primary" href="/admin/employee/employee/">Manage Details</a>
+ </div>
+
+ 	<div class="container">
+		<table class="table">
+		  <thead class="thead-light">
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">First Name</th>
+		      <th scope="col">Last Name</th>
+		      <th scope="col">Working Hours</th>
+		      <th scope="col">Date Join</th>
+		      <th scope="col">Date Left</th>
+		      <th scope="col">Status</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for employee in employees %}
+		    <tr>
+		      <th scope="row">{{ forloop.counter }}</th>
+		      <td>{{ employee.first_name|upper }} </td>
+		      <td>{{ employee.last_name|upper }} </td>
+		      <td>{{ employee.working_hours|upper }} </td>
+		      <td>{{ employee.date_join|upper }} </td>
+		      <td>{{ employee.date_left|upper }} </td>
+		      <td>{{ employee.status|upper }} </td>
+		    </tr>
+		    {% endfor %}
+		  </tbody>
+		</table>
+		<nav aria-label="navigation">
+			<ul class="pagination">
+		        {% if employees.has_previous %}
+		            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ employees.previous_page_number }}">Previous</a></li>
+		        {% endif %}
+
+	            {% for _ in employees.paginator.num_pages|make_list %}
+	            	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+	            {% endfor %}
+
+		        {% if employees.has_next %}
+		            <li class="page-item"><a class="page-link" href="?page={{ employees.next_page_number }}">Next</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ employees.paginator.num_pages }}">Last &raquo;</a></li>
+		        {% endif %}
+			</ul>
+		</nav>
+ 	</div>	
+
+{% endblock %}

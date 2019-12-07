@@ -1,0 +1,51 @@
+{% extends 'static/template.html' %}
+	
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal"><a href="/">ICT/17/B2/13</a></h5>
+      <h5 class="my-0 mr-md-auto font-weight-normal">Assigners</h5>
+      <a class="btn btn-outline-primary" href="/admin/assigner/assigner/">Manage Details</a>
+      <a class="btn btn-outline-primary" href="/assigner/history/">View History</a>
+ </div>
+
+ 	<div class="container">
+		<table class="table">
+		  <thead class="thead-light">
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Employee Name</th>
+		      <th scope="col">Department Name</th>
+		      <th scope="col">Working Hours Per Day</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for assigner in assigners %}
+		    <tr>
+		      <th scope="row">{{ forloop.counter }}</th>
+		      <td>{{ assigner.employee.first_name|upper }} {{ assigner.employee.last_name|upper }}</td>
+		      <td>{{ assigner.department.name|upper }} </td>
+		      <td>{{ assigner.working_hours|upper }} </td>
+		    </tr>
+		    {% endfor %}
+		  </tbody>
+		</table>
+		<nav aria-label="navigation">
+			<ul class="pagination">
+		        {% if assigners.has_previous %}
+		            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ assigners.previous_page_number }}">Previous</a></li>
+		        {% endif %}
+
+	            {% for _ in assigners.paginator.num_pages|make_list %}
+	            	<li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+	            {% endfor %}
+
+		        {% if assigners.has_next %}
+		            <li class="page-item"><a class="page-link" href="?page={{ assigners.next_page_number }}">Next</a></li>
+		            <li class="page-item"><a class="page-link" href="?page={{ assigners.paginator.num_pages }}">Last &raquo;</a></li>
+		        {% endif %}
+			</ul>
+		</nav>
+ 	</div>	
+
+{% endblock %}
