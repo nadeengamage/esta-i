@@ -35,6 +35,16 @@ For start, the application executes the below-mentioned code.
 $ python manage.py runserver
 ```
 
+### Usage
+
+Use the below credentials to log in to the admin dashboard.
+
+```sh
+username - admin
+password - admin
+```
+
+
 License
 ----
 
