@@ -1,8 +1,10 @@
+import uuid
 from django.db import models
 
 
 class Employee(models.Model):
 	emp_id 			= models.AutoField(primary_key=True)
+	identity_no		= models.UUIDField(default=uuid.uuid4, editable=False)
 	first_name 		= models.CharField(max_length=50)
 	last_name 		= models.CharField(max_length=50)
 	working_hours	= models.TimeField(auto_now=False, auto_now_add=False)
