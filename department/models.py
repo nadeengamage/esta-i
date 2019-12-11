@@ -1,7 +1,9 @@
+import uuid
 from django.db import models
 
 class Department(models.Model):
 	dep_id 					= models.AutoField(primary_key=True)
+	identity_no				= models.UUIDField(default=uuid.uuid4, editable=False)
 	name 					= models.CharField(max_length=100)
 	working_days_per_week 	= models.IntegerField()
 	working_hours_per_day 	= models.TimeField()
